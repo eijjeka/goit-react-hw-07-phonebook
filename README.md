@@ -2,6 +2,7 @@
 
 - Створений репозиторій `goit-react-hw-07-phonebook`
 - Використана бібліотека `Redux Toolkit`
+- [RTK Query]
 
 ## Телефонна книга
 
@@ -17,8 +18,3 @@
 конструктор ресурсу та опиши об'єкт контакту як на ілюстрації.
 
 <img src="./public/resource.png" alt="Contact schema" with="400" />
-
-Використовуй функцію
-[createAsyncThunk](https://redux-toolkit.js.org/api/createAsyncThunk) або
-[RTK Query](https://redux-toolkit.js.org/rtk-query/overview) для взаємодії з
-бекендом та асинхронними запитами.
