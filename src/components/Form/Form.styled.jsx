@@ -21,7 +21,7 @@ export const BtnSubmit = styled.button.attrs(() => ({
 }))`
   position: relative;
   padding: 5px 10px;
-  display: inline-block;
+  display: inline-flex;
   border-radius: 5px;
   border: none;
   cursor: pointer;

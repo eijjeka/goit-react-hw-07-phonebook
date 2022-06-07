@@ -1,25 +1,23 @@
 import { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { add, getContactState } from "../Redux/contactsSliсe";
-
-import Input from "../Input";
+import {
+  useGetContactsQuery,
+  useCreateContactMutation,
+} from "components/Redux/contactsApi";
+import Input from "components/Input";
 import PhoneInput from "react-phone-number-input";
-
-import { nanoid } from "nanoid";
 import "react-phone-number-input/style.css";
 import { FormContainer, BtnSubmit } from "./Form.styled";
+import { TailSpin } from "react-loader-spinner";
 
 const Form = () => {
+  const [createContact, { isLoading }] = useCreateContactMutation();
+  const { data: contacts } = useGetContactsQuery();
+
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
-  const [id, setId] = useState("");
-
-  const contacts = useSelector(getContactState);
-  const dispatch = useDispatch();
 
   const handleInputChange = (e) => {
     setName(e.currentTarget.value);
-    setId(nanoid());
   };
 
   const handleSubmit = (e) => {
@@ -30,7 +28,7 @@ const Form = () => {
     const checkName = contacts.find((el) => el.name === name);
 
     checkName === undefined
-      ? dispatch(add({ name, number, id }))
+      ? createContact({ name, number })
       : alert(`${name} is already in contacts.`);
 
     e.preventDefault();
@@ -40,7 +38,6 @@ const Form = () => {
   const reset = () => {
     setName("");
     setNumber("");
-    setId("");
   };
 
   return (
@@ -70,7 +67,10 @@ const Form = () => {
         className="inputPhone"
         maxLength="16"
       />
-      <BtnSubmit onSubmit={handleSubmit}>Add contact</BtnSubmit>
+      <BtnSubmit disabled={isLoading} onSubmit={handleSubmit}>
+        {isLoading && <TailSpin color="#fff" width="16" height="16" />}
+        Add contact
+      </BtnSubmit>
     </FormContainer>
   );
 };

@@ -1,5 +1,9 @@
-import { useSelector, useDispatch } from "react-redux";
-import { remove } from "../Redux/contactsSliсe";
+import { useSelector } from "react-redux";
+import {
+  useGetContactsQuery,
+  useDeleteContactMutation,
+} from "components/Redux/contactsApi";
+import { getFilter } from "components/Redux/contactsSlice";
 import {
   ContainerList,
   Title,
@@ -8,38 +12,35 @@ import {
   ButtonClose,
   TextList,
 } from "./ContactList.styled";
+import { TailSpin } from "react-loader-spinner";
 
 export const List = () => {
-  const items = useSelector((state) => state.contacts.items);
-  const nameFilter = useSelector((state) => state.contacts.filter);
-  const dispatch = useDispatch();
+  const { data, isFetching } = useGetContactsQuery();
+  const [deleteContact] = useDeleteContactMutation();
 
-  const deleteContact = (contactId) => {
-    dispatch(remove(contactId));
-  };
-
+  const nameFilter = useSelector(getFilter);
   const FilterItems = () => {
-    return items.filter((item) => item.name.toLowerCase().includes(nameFilter));
+    return data.filter((item) => item.name.toLowerCase().includes(nameFilter));
   };
 
-  let contacts = nameFilter === "" ? items : FilterItems();
+  let contacts = nameFilter === "" ? data : FilterItems();
 
   return (
     <ContainerList>
       <Title>Contacts</Title>
-      {contacts.length > 0 ? (
+      {isFetching && <TailSpin color="#427ae4" ariaLabel="loading-indicator" />}
+      {data && (
         <Wrapper>
-          {contacts.map(({ id, name, number }, index) => (
+          {contacts.map(({ id, name, phone }, index) => (
             <Item key={id} index={index}>
-              {name} : {number}
+              {name} : {phone}
               <ButtonClose onClick={() => deleteContact(id)}>
                 &#10007;
               </ButtonClose>
             </Item>
           ))}
+          {contacts.length === 0 && <TextList>No Contacts</TextList>}
         </Wrapper>
-      ) : (
-        <TextList>No Contacts</TextList>
       )}
     </ContainerList>
   );
